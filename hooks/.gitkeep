@@ -1,0 +1,4 @@
+# Custom React Hooks
+
+- `useProjects.ts` - Fetch and update projects from Supabase
+- `useSiteSettings.ts` - Fetch and update site settings from Supabase
