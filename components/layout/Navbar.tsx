@@ -4,6 +4,8 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Container } from "./Container";
 import { ThemeToggle } from "./ThemeToggle";
+import { EditableImageUrl } from "@/components/owner/EditableImageUrl";
+import { useOwner } from "@/context/OwnerContext";
 
 interface NavItem {
   label: string;
@@ -19,9 +21,12 @@ const navItems: NavItem[] = [
 
 interface NavbarProps {
   className?: string;
+  settings?: Record<string, string>;
 }
 
-export function Navbar({ className }: NavbarProps) {
+export function Navbar({ className, settings = {} }: NavbarProps) {
+  const { isOwner } = useOwner();
+  const avatarUrl = settings.navbar_avatar_url || "";
   return (
     <header
       className={cn(
@@ -32,12 +37,25 @@ export function Navbar({ className }: NavbarProps) {
       <Container>
         <nav className="flex h-16 items-center justify-between">
           {/* Logo / Brand */}
-          <Link
-            href="/"
-            className="text-lg font-semibold tracking-tight transition-colors hover:text-primary"
-          >
-            Portfolio
-          </Link>
+          <div className="flex items-center gap-3">
+            <div className="relative h-8 w-8 overflow-hidden rounded-full border border-border bg-muted">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
+              ) : (
+                <div className="h-full w-full" />
+              )}
+              {isOwner && (
+                <EditableImageUrl settingKey="navbar_avatar_url" value={avatarUrl} />
+              )}
+            </div>
+            <Link
+              href="/"
+              className="text-lg font-semibold tracking-tight transition-colors hover:text-primary"
+            >
+              Portfolio
+            </Link>
+          </div>
 
           {/* Navigation Links */}
           <ul className="hidden items-center gap-6 md:flex">

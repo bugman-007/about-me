@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyOwner } from "@/lib/supabase/auth";
-import { createClient as createServerClient } from "@/lib/supabase/server";
+import { createClient as createAdminClient } from "@/lib/supabase/admin";
 
 /**
  * Update site settings
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
       }
 
       // Use server client (authenticated, respects RLS)
-      const supabase = await createServerClient();
+      const supabase = createAdminClient();
       
       // Prepare bulk upsert data
       const upsertData = entries.map(([key, value]) => ({
@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
       }
 
       // Use server client (authenticated, respects RLS)
-      const supabase = await createServerClient();
+      const supabase = createAdminClient();
       
       const { data, error } = await supabase
         .from("site_settings")

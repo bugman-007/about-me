@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyOwner } from "@/lib/supabase/auth";
-import { createClient as createServerClient } from "@/lib/supabase/server";
+import { createClient as createAdminClient } from "@/lib/supabase/admin";
 
 /**
  * Update project data
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Use server client (authenticated, respects RLS)
-    const supabase = await createServerClient();
+    const supabase = createAdminClient();
     
     const { data, error } = await supabase
       .from("projects")

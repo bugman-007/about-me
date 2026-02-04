@@ -4,9 +4,12 @@ import Link from "next/link";
 import { Container } from "@/components/layout";
 import { FadeIn, SlideUp, StaggerChildren, StaggerItem } from "@/components/animations";
 import { Button } from "@/components/ui/button";
+import { EditableText } from "@/components/owner/EditableText";
+import { useOwner } from "@/context/OwnerContext";
 
 interface HeroSectionProps {
   className?: string;
+  settings?: Record<string, string>;
 }
 
 // Layout wrapper for hero content
@@ -22,41 +25,72 @@ function HeroContainer({ children }: { children: React.ReactNode }) {
 }
 
 // Strong positioning heading
-function HeroHeading() {
+function HeroHeading({ value }: { value: string }) {
   return (
     <FadeIn direction="up">
-      <h1 className="text-balance text-4xl font-bold tracking-tight sm:text-6xl">
-        I design AI-powered, data-intensive systems that scale.
-      </h1>
+      <EditableText
+        settingKey="hero_headline"
+        value={value}
+        as="h1"
+        className="text-balance text-4xl font-bold tracking-tight sm:text-6xl"
+      />
     </FadeIn>
   );
 }
 
 // Subheading paragraph
-function HeroSubheading() {
+function HeroSubheading({ value }: { value: string }) {
   return (
     <SlideUp>
-      <p className="mt-6 text-pretty text-lg text-muted-foreground">
-        Senior engineer focused on distributed systems, AI integration, and platform architecture.
-        I build resilient backends, optimized data pipelines, and interfaces that enable actionable intelligence.
-      </p>
+      <EditableText
+        settingKey="hero_subheadline"
+        value={value}
+        multiline
+        as="p"
+        className="mt-6 text-pretty text-lg text-muted-foreground"
+      />
     </SlideUp>
   );
 }
 
 // CTA buttons grouped with staggered motion
-function HeroCTAGroup() {
+function HeroCTAGroup({
+  cta1Label,
+  cta1Href,
+  cta2Label,
+  cta2Href,
+}: {
+  cta1Label: string;
+  cta1Href: string;
+  cta2Label: string;
+  cta2Href: string;
+}) {
+  const { isOwner } = useOwner();
   return (
     <StaggerChildren className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
       <StaggerItem>
         <Button asChild size="lg">
-          <Link href="/projects">View Projects</Link>
+          <Link href={cta1Href}>
+            <EditableText settingKey="hero_cta1_label" value={cta1Label} as="span" />
+          </Link>
         </Button>
+        {isOwner && (
+          <div className="mt-1 text-xs text-muted-foreground">
+            Link: <EditableText settingKey="hero_cta1_href" value={cta1Href} as="span" />
+          </div>
+        )}
       </StaggerItem>
       <StaggerItem>
         <Button asChild variant="outline" size="lg">
-          <Link href="#capabilities">System Capabilities</Link>
+          <Link href={cta2Href}>
+            <EditableText settingKey="hero_cta2_label" value={cta2Label} as="span" />
+          </Link>
         </Button>
+        {isOwner && (
+          <div className="mt-1 text-xs text-muted-foreground">
+            Link: <EditableText settingKey="hero_cta2_href" value={cta2Href} as="span" />
+          </div>
+        )}
       </StaggerItem>
     </StaggerChildren>
   );
@@ -78,13 +112,26 @@ function HeroBackgroundVisual() {
   );
 }
 
-export function HeroSection({ className }: HeroSectionProps) {
+export function HeroSection({ className, settings = {} }: HeroSectionProps) {
+  const headline = settings.hero_headline ?? "I design AI-powered, data-intensive systems that scale.";
+  const sub =
+    settings.hero_subheadline ??
+    "Senior engineer focused on distributed systems, AI integration, and platform architecture. I build resilient backends, optimized data pipelines, and interfaces that enable actionable intelligence.";
+  const cta1Label = settings.hero_cta1_label ?? "View Projects";
+  const cta1Href = settings.hero_cta1_href ?? "/projects";
+  const cta2Label = settings.hero_cta2_label ?? "System Capabilities";
+  const cta2Href = settings.hero_cta2_href ?? "#capabilities";
   return (
     <section className={className}>
       <HeroContainer>
-        <HeroHeading />
-        <HeroSubheading />
-        <HeroCTAGroup />
+        <HeroHeading value={headline} />
+        <HeroSubheading value={sub} />
+        <HeroCTAGroup
+          cta1Label={cta1Label}
+          cta1Href={cta1Href}
+          cta2Label={cta2Label}
+          cta2Href={cta2Href}
+        />
       </HeroContainer>
     </section>
   );

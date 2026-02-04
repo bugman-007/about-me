@@ -9,6 +9,8 @@ export interface Project {
   description: string;
   tech_stack: string[];
   url: string;
+  image_url?: string;
+  slug?: string;
   featured: boolean;
   created_at: string;
   updated_at: string;

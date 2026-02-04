@@ -6,6 +6,8 @@ export interface Project {
   description: string | null;
   tech_stack: string[];
   url: string | null;
+  image_url: string | null;
+  slug: string | null;
   featured: boolean;
   created_at: string;
   updated_at: string;

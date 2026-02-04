@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { DEFAULT_SETTINGS } from "@/lib/content/keys";
 
 export interface SiteSetting {
   id: string;
@@ -7,6 +8,12 @@ export interface SiteSetting {
   created_at: string;
   updated_at: string;
 }
+
+/**
+ * Required site settings and their default values.
+ * These centralize all non-project content.
+ */
+// Settings defaults are defined in lib/content/keys.ts
 
 /**
  * Fetch all site settings from Supabase
@@ -32,6 +39,10 @@ export async function getSettings(): Promise<Record<string, string>> {
     {} as Record<string, string>
   );
 
+  // Merge defaults for any missing keys (read-only; ensure happens elsewhere)
+  for (const [k, v] of Object.entries(DEFAULT_SETTINGS)) {
+    if (settings[k] === undefined) settings[k] = v as string;
+  }
   return settings;
 }
 
@@ -64,5 +75,5 @@ export const SETTING_KEYS = {
   CONTACT_EMAIL: "contact_email",
   GITHUB_URL: "github_url",
   LINKEDIN_URL: "linkedin_url",
-  TWITTER_URL: "twitter_url",
+  TWITTER_URL: "x_url",
 } as const;

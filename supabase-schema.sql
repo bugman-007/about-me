@@ -13,6 +13,8 @@ CREATE TABLE IF NOT EXISTS public.projects (
   description TEXT,
   tech_stack TEXT[], -- Array of technology tags
   url TEXT,
+  image_url TEXT,
+  slug TEXT UNIQUE,
   featured BOOLEAN DEFAULT false,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -69,6 +71,10 @@ INSERT INTO public.projects (title, description, tech_stack, url, featured) VALU
   ('AI-Powered Analytics Platform', 'Built a distributed system processing 1M+ events/day with real-time ML inference', ARRAY['Python', 'FastAPI', 'PostgreSQL', 'Redis', 'Docker'], 'https://github.com', true),
   ('Infrastructure Automation Suite', 'Designed IaC framework reducing deployment time by 80%', ARRAY['TypeScript', 'AWS CDK', 'Terraform', 'Kubernetes'], 'https://github.com', true),
   ('Real-time Collaboration Engine', 'WebSocket-based system with CRDT conflict resolution', ARRAY['Node.js', 'WebSockets', 'MongoDB', 'React'], 'https://github.com', false);
+
+-- Add columns if table already existed
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS image_url TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS slug TEXT UNIQUE;
 
 -- Sample site settings
 INSERT INTO public.site_settings (key, value) VALUES

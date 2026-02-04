@@ -2,6 +2,9 @@
 
 import { Container } from "@/components/layout";
 import { FadeIn, StaggerChildren, StaggerItem } from "@/components/animations";
+import { EditableText } from "@/components/owner/EditableText";
+import { EditableJson } from "@/components/owner/EditableJson";
+import { useOwner } from "@/context/OwnerContext";
 
 interface Capability {
   title: string;
@@ -29,24 +32,41 @@ const capabilities: Capability[] = [
 
 interface SystemCapabilitiesProps {
   className?: string;
+  settings?: Record<string, string>;
 }
 
-export function SystemCapabilities({ className }: SystemCapabilitiesProps) {
+export function SystemCapabilities({ className, settings = {} }: SystemCapabilitiesProps) {
+  const { isOwner } = useOwner();
+  const title = settings.capabilities_title ?? "System Capabilities";
+  const subtitle = settings.capabilities_subtitle ?? "Technical expertise and capabilities";
+  let list: Capability[] = capabilities;
+  if (settings.capabilities_json) {
+    try {
+      const parsed = JSON.parse(settings.capabilities_json);
+      if (Array.isArray(parsed)) list = parsed as Capability[];
+    } catch {}
+  }
   return (
     <section className={className}>
       <Container>
         <div className="py-20">
           <FadeIn>
-            <h2 className="text-3xl font-bold tracking-tight">
-              System Capabilities
-            </h2>
-            <p className="mt-4 text-muted-foreground">
-              Technical expertise and capabilities
-            </p>
+            <EditableText
+              settingKey="capabilities_title"
+              value={title}
+              as="h2"
+              className="text-3xl font-bold tracking-tight"
+            />
+            <EditableText
+              settingKey="capabilities_subtitle"
+              value={subtitle}
+              as="p"
+              className="mt-4 text-muted-foreground"
+            />
           </FadeIn>
 
           <StaggerChildren className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {capabilities.map((capability) => (
+            {list.map((capability) => (
               <StaggerItem key={capability.title}>
                 <div className="rounded-lg border border-border p-6">
                   <h3 className="font-semibold">{capability.title}</h3>
@@ -57,6 +77,17 @@ export function SystemCapabilities({ className }: SystemCapabilitiesProps) {
               </StaggerItem>
             ))}
           </StaggerChildren>
+
+          {isOwner && (
+            <div className="mt-8">
+              <p className="mb-2 text-xs text-muted-foreground">Edit capabilities list (JSON)</p>
+              <EditableJson
+                settingKey="capabilities_json"
+                value={settings.capabilities_json}
+                className="inline-block"
+              />
+            </div>
+          )}
         </div>
       </Container>
     </section>

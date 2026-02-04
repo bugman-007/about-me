@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers";
 import { Navbar, Footer } from "@/components/layout";
+import { getSettings } from "@/lib/data/settings";
 import { OwnerProvider } from "@/context/OwnerContext";
 import { OwnerKeyListener, OwnerLoginModal } from "@/components/owner";
 import { OwnerToolbar } from "@/components/owner/OwnerToolbar";
@@ -50,11 +51,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getSettings();
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>
@@ -69,7 +71,7 @@ export default function RootLayout({
             <OwnerLoginModal />
             <OwnerToolbar />
             <div className="relative flex min-h-screen flex-col">
-              <Navbar />
+              <Navbar settings={settings} />
               <main className="flex-1">{children}</main>
               <Footer />
             </div>

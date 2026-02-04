@@ -20,24 +20,37 @@ const OwnerContext = createContext<OwnerContextType | undefined>(undefined);
 export function OwnerProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isOwner, setIsOwner] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const supabase = createClient();
 
-  // Check if current user is the owner
-  const isOwner = user !== null;
-
   useEffect(() => {
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setUser(session?.user ?? null);
+      // Ask server if this user is the owner (server knows OWNER_ID)
+      try {
+        const res = await fetch("/api/auth/is-owner");
+        const data = await res.json();
+        setIsOwner(Boolean(data?.isOwner));
+      } catch {
+        setIsOwner(false);
+      }
       setIsLoading(false);
     });
 
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setUser(session?.user ?? null);
+      try {
+        const res = await fetch("/api/auth/is-owner");
+        const data = await res.json();
+        setIsOwner(Boolean(data?.isOwner));
+      } catch {
+        setIsOwner(false);
+      }
       setIsLoading(false);
     });
 
