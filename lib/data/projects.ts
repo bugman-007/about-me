@@ -46,7 +46,6 @@ export async function getProjects(
   const { data, error } = await query;
 
   if (error) {
-    console.error("Error fetching projects:", error);
     return [];
   }
 
@@ -68,7 +67,6 @@ export async function getProjectById(id: string): Promise<Project | null> {
     .single();
 
   if (error) {
-    console.error("Error fetching project:", error);
     return null;
   }
 

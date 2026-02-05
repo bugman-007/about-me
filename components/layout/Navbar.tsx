@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Container } from "./Container";
 import { ThemeToggle } from "./ThemeToggle";
 import { EditableImageUrl } from "@/components/owner/EditableImageUrl";
+import { EditableText } from "@/components/owner/EditableText";
 import { useOwner } from "@/context/OwnerContext";
 import { motion, useScroll } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -28,6 +29,7 @@ interface NavbarProps {
 export function Navbar({ className, settings = {} }: NavbarProps) {
   const { isOwner } = useOwner();
   const avatarUrl = settings.navbar_avatar_url || "";
+  const brand = settings.navbar_brand_text || "Portfolio";
   const { scrollYProgress } = useScroll();
   const [active, setActive] = useState<string>("home");
 
@@ -73,12 +75,17 @@ export function Navbar({ className, settings = {} }: NavbarProps) {
                 <EditableImageUrl settingKey="navbar_avatar_url" value={avatarUrl} />
               )}
             </div>
-            <Link
-              href="/"
-              className="text-2xl font-semibold tracking-tight transition-colors hover:text-primary"
-            >
-              Portfolio
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/"
+                className="text-2xl font-semibold tracking-tight transition-colors hover:text-primary"
+              >
+                {brand}
+              </Link>
+              {isOwner && (
+                <EditableText settingKey="navbar_brand_text" value={brand} buttonOnly label="Site Title" />
+              )}
+            </div>
           </div>
 
           {/* Navigation Links */}

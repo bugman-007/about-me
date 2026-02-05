@@ -206,17 +206,12 @@ export default function ProjectsClient({ initialProjects }: { initialProjects: P
             <ProjectCard
               project={{ ...p, description: p.description || "", url: p.url || "" }}
               footer={
-                <div className="flex items-center gap-2">
-                  {p.url && (
-                    <a href={p.url} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">Visit</a>
-                  )}
-                  {isOwner && (
-                    <>
-                      <Button size="sm" variant="outline" onClick={() => openEdit(p)}>Edit</Button>
-                      <Button size="sm" variant="outline" onClick={() => remove(p.id)}>Delete</Button>
-                    </>
-                  )}
-                </div>
+                isOwner ? (
+                  <div className="flex items-center gap-2">
+                    <Button size="sm" variant="outline" onClick={() => openEdit(p)}>Edit</Button>
+                    <Button size="sm" variant="outline" onClick={() => remove(p.id)}>Delete</Button>
+                  </div>
+                ) : undefined
               }
             />
           </Reveal>

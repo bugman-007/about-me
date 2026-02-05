@@ -31,6 +31,7 @@ export const REQUIRED_SETTING_KEYS = {
 
   // Navbar
   navbar_avatar_url: true,
+  navbar_brand_text: true,
 
   // Experience
   experience_title: true,
@@ -92,6 +93,7 @@ export const DEFAULT_SETTINGS: Record<SettingKey, string> = {
 
   // Navbar
   navbar_avatar_url: "",
+  navbar_brand_text: "Portfolio",
 
   // Experience
   experience_title: "Experience",

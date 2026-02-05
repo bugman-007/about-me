@@ -17,9 +17,10 @@ interface EditableTextProps {
   multiline?: boolean;
   as?: any;
   className?: string;
+  buttonOnly?: boolean;
 }
 
-export function EditableText({ settingKey, value = "", label, multiline, as = "span", className }: EditableTextProps) {
+export function EditableText({ settingKey, value = "", label, multiline, as = "span", className, buttonOnly }: EditableTextProps) {
   const { isOwner } = useOwner();
   const [open, setOpen] = useState(false);
   const [local, setLocal] = useState(value);
@@ -45,11 +46,11 @@ export function EditableText({ settingKey, value = "", label, multiline, as = "s
     }
   };
 
-  if (!isOwner) return <Tag className={className}>{value}</Tag>;
+  if (!isOwner) return buttonOnly ? null : <Tag className={className}>{value}</Tag>;
 
   return (
     <span className={cn("group/et inline-flex items-center gap-2")}> 
-      <Tag className={className}>{value}</Tag>
+      {!buttonOnly && <Tag className={className}>{value}</Tag>}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <button className="rounded p-1 text-muted-foreground opacity-0 ring-1 ring-transparent transition-all hover:text-foreground hover:ring-border group-hover/et:opacity-100" aria-label="Edit">

@@ -59,7 +59,7 @@ export function FeaturedProjects({ className, initialProjects = [] }: FeaturedPr
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to create project");
+      if (!res.ok) throw new Error(`${data.error || "Failed to create project"}${data.details ? `: ${data.details}` : ""}`);
       setOpen(false);
       setForm({ title: "", description: "", url: "", image_url: "", tech_stack: "", featured: true, slug: "" });
     } catch (e) {
