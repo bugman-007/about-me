@@ -18,9 +18,10 @@ interface EditableTextProps {
   as?: any;
   className?: string;
   buttonOnly?: boolean;
+  alwaysVisible?: boolean;
 }
 
-export function EditableText({ settingKey, value = "", label, multiline, as = "span", className, buttonOnly }: EditableTextProps) {
+export function EditableText({ settingKey, value = "", label, multiline, as = "span", className, buttonOnly, alwaysVisible }: EditableTextProps) {
   const { isOwner } = useOwner();
   const [open, setOpen] = useState(false);
   const [local, setLocal] = useState(value);
@@ -53,7 +54,10 @@ export function EditableText({ settingKey, value = "", label, multiline, as = "s
       {!buttonOnly && <Tag className={className}>{value}</Tag>}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <button className="rounded p-1 text-muted-foreground opacity-0 ring-1 ring-transparent transition-all hover:text-foreground hover:ring-border group-hover/et:opacity-100" aria-label="Edit">
+          <button className={cn(
+            "rounded p-1 text-muted-foreground ring-1 ring-transparent transition-all hover:text-foreground hover:ring-border",
+            alwaysVisible ? undefined : "opacity-0 group-hover/et:opacity-100"
+          )} aria-label="Edit">
             <Pencil className="h-3.5 w-3.5" />
           </button>
         </DialogTrigger>

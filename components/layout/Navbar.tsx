@@ -83,7 +83,7 @@ export function Navbar({ className, settings = {} }: NavbarProps) {
                 {brand}
               </Link>
               {isOwner && (
-                <EditableText settingKey="navbar_brand_text" value={brand} buttonOnly label="Site Title" />
+                <EditableText settingKey="navbar_brand_text" value={brand} buttonOnly alwaysVisible label="Site Title" />
               )}
             </div>
           </div>
