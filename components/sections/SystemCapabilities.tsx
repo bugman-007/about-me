@@ -1,7 +1,9 @@
 "use client";
 
 import { Container } from "@/components/layout";
-import { FadeIn, StaggerChildren, StaggerItem } from "@/components/animations";
+import { FadeIn } from "@/components/animations";
+import { Reveal, RevealStagger } from "@/components/animations/Reveal";
+import { HoverCard } from "@/components/animations/HoverCard";
 import { EditableText } from "@/components/owner/EditableText";
 import { EditableJson } from "@/components/owner/EditableJson";
 import { useOwner } from "@/context/OwnerContext";
@@ -47,15 +49,15 @@ export function SystemCapabilities({ className, settings = {} }: SystemCapabilit
     } catch {}
   }
   return (
-    <section className={className}>
+    <section id="capabilities" className={className}>
       <Container>
         <div className="py-20">
-          <FadeIn>
+          <Reveal>
             <EditableText
               settingKey="capabilities_title"
               value={title}
               as="h2"
-              className="text-3xl font-bold tracking-tight"
+              className="text-4xl font-bold tracking-tight"
             />
             <EditableText
               settingKey="capabilities_subtitle"
@@ -63,20 +65,20 @@ export function SystemCapabilities({ className, settings = {} }: SystemCapabilit
               as="p"
               className="mt-4 text-muted-foreground"
             />
-          </FadeIn>
+          </Reveal>
 
-          <StaggerChildren className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {list.map((capability) => (
-              <StaggerItem key={capability.title}>
-                <div className="rounded-lg border border-border p-6">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {list.map((capability, i) => (
+              <Reveal key={capability.title} delay={i * 0.06}>
+                <HoverCard className="p-6">
                   <h3 className="font-semibold">{capability.title}</h3>
                   <p className="mt-2 text-sm text-muted-foreground">
                     {capability.description}
                   </p>
-                </div>
-              </StaggerItem>
+                </HoverCard>
+              </Reveal>
             ))}
-          </StaggerChildren>
+          </div>
 
           {isOwner && (
             <div className="mt-8">

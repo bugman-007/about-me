@@ -1,7 +1,8 @@
 "use client";
 
 import { Container } from "@/components/layout";
-import { FadeIn, SlideUp } from "@/components/animations";
+import { Reveal } from "@/components/animations/Reveal";
+import { HoverCard } from "@/components/animations/HoverCard";
 import { EditableText } from "@/components/owner/EditableText";
 import { EditableJson } from "@/components/owner/EditableJson";
 import { useOwner } from "@/context/OwnerContext";
@@ -92,15 +93,15 @@ export function ExperienceSection({ className, settings = {} }: ExperienceSectio
     <section className={className}>
       <Container>
         <div className="py-20">
-          <FadeIn>
+          <Reveal>
             <EditableText settingKey="experience_title" value={settings.experience_title ?? "Experience"} as="h2" className="text-3xl font-bold tracking-tight" />
             <EditableText settingKey="experience_subtitle" value={settings.experience_subtitle ?? "Professional journey and career highlights"} as="p" className="mt-4 text-muted-foreground" />
-          </FadeIn>
+          </Reveal>
 
           <div className="mt-12 space-y-8">
             {items.map((experience: Experience, index: number) => (
-              <SlideUp key={experience.company} delay={index * 0.1}>
-                <div className="rounded-lg border border-border p-6">
+              <Reveal key={experience.company} delay={index * 0.08}>
+                <HoverCard className="p-6">
                   <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                     <div>
                       <h3 className="font-semibold">{experience.role}</h3>
@@ -121,8 +122,8 @@ export function ExperienceSection({ className, settings = {} }: ExperienceSectio
                       <Button size="sm" variant="outline" onClick={() => remove(index)}>Delete</Button>
                     </div>
                   )}
-                </div>
-              </SlideUp>
+                </HoverCard>
+              </Reveal>
             ))}
           </div>
 

@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { Container } from "@/components/layout";
 import { FadeIn, SlideUp, StaggerChildren, StaggerItem } from "@/components/animations";
+import { Reveal, RevealStagger } from "@/components/animations/Reveal";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { EditableText } from "@/components/owner/EditableText";
 import { useOwner } from "@/context/OwnerContext";
@@ -25,23 +27,34 @@ function HeroContainer({ children }: { children: React.ReactNode }) {
 }
 
 // Strong positioning heading
+function Badge() {
+  return (
+    <div className="mx-auto mb-4 inline-flex items-center rounded-full border border-border bg-background/50 px-3 py-1 text-xs text-muted-foreground backdrop-blur">
+      AI Systems Engineer
+    </div>
+  );
+}
+
 function HeroHeading({ value }: { value: string }) {
   return (
-    <FadeIn direction="up">
-      <EditableText
-        settingKey="hero_headline"
-        value={value}
-        as="h1"
-        className="text-balance text-4xl font-bold tracking-tight sm:text-6xl"
-      />
-    </FadeIn>
+    <Reveal>
+      <div>
+        <Badge />
+        <EditableText
+          settingKey="hero_headline"
+          value={value}
+          as="h1"
+          className="text-balance text-5xl font-bold tracking-tight sm:text-6xl"
+        />
+      </div>
+    </Reveal>
   );
 }
 
 // Subheading paragraph
 function HeroSubheading({ value }: { value: string }) {
   return (
-    <SlideUp>
+    <Reveal delay={0.1}>
       <EditableText
         settingKey="hero_subheadline"
         value={value}
@@ -49,7 +62,7 @@ function HeroSubheading({ value }: { value: string }) {
         as="p"
         className="mt-6 text-pretty text-lg text-muted-foreground"
       />
-    </SlideUp>
+    </Reveal>
   );
 }
 
@@ -67,32 +80,37 @@ function HeroCTAGroup({
 }) {
   const { isOwner } = useOwner();
   return (
-    <StaggerChildren className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-      <StaggerItem>
-        <Button asChild size="lg">
-          <Link href={cta1Href}>
-            <EditableText settingKey="hero_cta1_label" value={cta1Label} as="span" />
-          </Link>
-        </Button>
-        {isOwner && (
-          <div className="mt-1 text-xs text-muted-foreground">
-            Link: <EditableText settingKey="hero_cta1_href" value={cta1Href} as="span" />
-          </div>
-        )}
-      </StaggerItem>
-      <StaggerItem>
-        <Button asChild variant="outline" size="lg">
-          <Link href={cta2Href}>
-            <EditableText settingKey="hero_cta2_label" value={cta2Label} as="span" />
-          </Link>
-        </Button>
-        {isOwner && (
-          <div className="mt-1 text-xs text-muted-foreground">
-            Link: <EditableText settingKey="hero_cta2_href" value={cta2Href} as="span" />
-          </div>
-        )}
-      </StaggerItem>
-    </StaggerChildren>
+    <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <RevealStagger>
+        <div>
+          <motion.div whileHover={{ scale: 1.03 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
+            <Button asChild size="lg">
+              <Link href={cta1Href}>
+                <EditableText settingKey="hero_cta1_label" value={cta1Label} as="span" />
+              </Link>
+            </Button>
+          </motion.div>
+          {isOwner && (
+            <div className="mt-1 text-xs text-muted-foreground">
+              Link: <EditableText settingKey="hero_cta1_href" value={cta1Href} as="span" />
+            </div>
+          )}
+        </div>
+        <div>
+          <Button asChild variant="outline" size="lg" className="group">
+            <Link href={cta2Href}>
+              <EditableText settingKey="hero_cta2_label" value={cta2Label} as="span" />
+              <span className="ml-2 transition-transform group-hover:translate-x-0.5">→</span>
+            </Link>
+          </Button>
+          {isOwner && (
+            <div className="mt-1 text-xs text-muted-foreground">
+              Link: <EditableText settingKey="hero_cta2_href" value={cta2Href} as="span" />
+            </div>
+          )}
+        </div>
+      </RevealStagger>
+    </div>
   );
 }
 
@@ -100,14 +118,8 @@ function HeroCTAGroup({
 function HeroBackgroundVisual() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-      {/* radial gradient glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.15),transparent_60%)]" />
-      {/* technical grid */}
-      <div
-        className="absolute inset-0 opacity-[0.07] [background-image:linear-gradient(to_right,rgba(255,255,255,0.2)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.2)_1px,transparent_1px)] [background-size:32px_32px] [mask-image:radial-gradient(circle_at_center,black,transparent_75%)] dark:opacity-[0.09]"
-      />
-      {/* subtle top gradient fade */}
-      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-background" />
+      {/* cleaned hero-specific layer kept subtle, global animated bg handles motion */}
+      <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-background" />
     </div>
   );
 }
@@ -122,7 +134,7 @@ export function HeroSection({ className, settings = {} }: HeroSectionProps) {
   const cta2Label = settings.hero_cta2_label ?? "System Capabilities";
   const cta2Href = settings.hero_cta2_href ?? "#capabilities";
   return (
-    <section className={className}>
+    <section id="home" className={className}>
       <HeroContainer>
         <HeroHeading value={headline} />
         <HeroSubheading value={sub} />

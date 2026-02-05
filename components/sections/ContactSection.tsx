@@ -1,9 +1,10 @@
 "use client";
 
 import { Container } from "@/components/layout";
-import { FadeIn } from "@/components/animations";
+import { Reveal } from "@/components/animations/Reveal";
+import { HoverCard } from "@/components/animations/HoverCard";
 import { EditableText } from "@/components/owner/EditableText";
-import { Mail, Github, Linkedin, Twitter } from "lucide-react";
+import { Mail, Github, Linkedin } from "lucide-react";
 
 interface ContactSectionProps {
   className?: string;
@@ -19,10 +20,10 @@ export function ContactSection({ className, initialSettings = {} }: ContactSecti
   };
 
   return (
-    <section className={className}>
+    <section id="contact" className={className}>
       <Container>
         <div className="py-20">
-          <FadeIn>
+          <Reveal>
             <div className="mx-auto max-w-2xl">
               {/* Header with optional edit button */}
               <div className="mb-8">
@@ -30,7 +31,7 @@ export function ContactSection({ className, initialSettings = {} }: ContactSecti
                   settingKey="contact_title"
                   value={initialSettings.contact_title ?? "Get in Touch"}
                   as="h2"
-                  className="text-3xl font-bold tracking-tight"
+                  className="text-4xl font-bold tracking-tight"
                 />
                 <EditableText
                   settingKey="contact_subtitle"
@@ -43,7 +44,7 @@ export function ContactSection({ className, initialSettings = {} }: ContactSecti
               {/* Display + Inline Edit via EditableField */}
               <div className="space-y-6">
                   {/* Email */}
-                  <div className="flex items-center gap-3 p-4 rounded-lg border border-border bg-card">
+                  <HoverCard className="flex items-center gap-3 p-4">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
                       <Mail className="h-5 w-5" />
                     </div>
@@ -56,10 +57,10 @@ export function ContactSection({ className, initialSettings = {} }: ContactSecti
                         className="text-base truncate"
                       />
                     </div>
-                  </div>
+                  </HoverCard>
 
                   {/* GitHub */}
-                  <div className="flex items-center gap-3 p-4 rounded-lg border border-border bg-card">
+                  <HoverCard className="flex items-center gap-3 p-4">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
                       <Github className="h-5 w-5" />
                     </div>
@@ -72,10 +73,10 @@ export function ContactSection({ className, initialSettings = {} }: ContactSecti
                         className="text-base truncate"
                       />
                     </div>
-                  </div>
+                  </HoverCard>
 
                   {/* LinkedIn */}
-                  <div className="flex items-center gap-3 p-4 rounded-lg border border-border bg-card">
+                  <HoverCard className="flex items-center gap-3 p-4">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
                       <Linkedin className="h-5 w-5" />
                     </div>
@@ -88,26 +89,10 @@ export function ContactSection({ className, initialSettings = {} }: ContactSecti
                         className="text-base truncate"
                       />
                     </div>
-                  </div>
-
-                  {/* X/Twitter */}
-                  <div className="flex items-center gap-3 p-4 rounded-lg border border-border bg-card">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                      <Twitter className="h-5 w-5" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-muted-foreground">X / Twitter</p>
-                      <EditableText
-                        settingKey="x_url"
-                        value={settings.x_url}
-                        as="p"
-                        className="text-base truncate"
-                      />
-                    </div>
-                  </div>
+                  </HoverCard>
               </div>
             </div>
-          </FadeIn>
+          </Reveal>
         </div>
       </Container>
     </section>

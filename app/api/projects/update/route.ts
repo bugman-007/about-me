@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
 
     // Parse and validate request body
     const body = await request.json();
-    const { id, title, description, tech_stack, url, featured } = body;
+    const { id, title, description, tech_stack, url, featured, image_url, slug } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -43,6 +43,8 @@ export async function POST(request: NextRequest) {
         tech_stack,
         url,
         featured,
+        image_url,
+        slug,
         updated_at: new Date().toISOString(),
       })
       .eq("id", id)

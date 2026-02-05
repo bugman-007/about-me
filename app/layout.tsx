@@ -7,6 +7,7 @@ import { getSettings } from "@/lib/data/settings";
 import { OwnerProvider } from "@/context/OwnerContext";
 import { OwnerKeyListener, OwnerLoginModal } from "@/components/owner";
 import { OwnerToolbar } from "@/components/owner/OwnerToolbar";
+import { AnimatedBackground } from "@/components/visual/AnimatedBackground";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -71,6 +72,7 @@ export default async function RootLayout({
             <OwnerLoginModal />
             <OwnerToolbar />
             <div className="relative flex min-h-screen flex-col">
+              <AnimatedBackground />
               <Navbar settings={settings} />
               <main className="flex-1">{children}</main>
               <Footer />

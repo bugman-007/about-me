@@ -75,5 +75,4 @@ export const SETTING_KEYS = {
   CONTACT_EMAIL: "contact_email",
   GITHUB_URL: "github_url",
   LINKEDIN_URL: "linkedin_url",
-  TWITTER_URL: "x_url",
 } as const;
