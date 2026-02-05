@@ -17,7 +17,6 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: "Home", href: "/" },
   { label: "Projects", href: "/projects" },
-  { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -33,7 +32,7 @@ export function Navbar({ className, settings = {} }: NavbarProps) {
   const [active, setActive] = useState<string>("home");
 
   useEffect(() => {
-    const sections = ["home", "projects", "about", "contact"]; 
+    const sections = ["home", "projects", "contact"]; 
     const obs = new IntersectionObserver((entries) => {
       const visible = entries
         .filter((e) => e.isIntersecting)

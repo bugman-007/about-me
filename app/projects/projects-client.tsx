@@ -8,8 +8,8 @@ import { toast } from "@/lib/toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { HoverCard } from "@/components/animations/HoverCard";
 import { Reveal } from "@/components/animations/Reveal";
+import { ProjectCard } from "@/components/projects/ProjectCard";
 
 export default function ProjectsClient({ initialProjects }: { initialProjects: Project[] }) {
   const { isOwner } = useOwner();
@@ -203,31 +203,22 @@ export default function ProjectsClient({ initialProjects }: { initialProjects: P
       <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {projects.map((p, i) => (
           <Reveal key={p.id} delay={i * 0.06}>
-          <HoverCard className="p-6">
-            {p.image_url && (
-              <div className="relative mb-3 overflow-hidden rounded-lg ring-1 ring-border/40 before:pointer-events-none before:absolute before:inset-0 before:rounded-lg before:opacity-0 before:transition-opacity hover:before:opacity-100 before:[background:radial-gradient(220px_circle_at_var(--x,50%)_var(--y,50%),hsl(var(--primary)/.18),transparent_42%)]">
-                <img src={p.image_url} alt={p.title} className="h-80 w-full object-cover" />
-              </div>
-            )}
-            <h3 className="font-semibold">{p.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">{p.description}</p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {(p.tech_stack || []).map((t) => (
-                <span key={t} className="rounded-full bg-secondary px-2 py-1 text-xs text-secondary-foreground">{t}</span>
-              ))}
-            </div>
-            <div className="mt-4 flex items-center gap-2">
-              {p.url && (
-                <a href={p.url} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">Visit</a>
-              )}
-              {isOwner && (
-                <>
-                  <Button size="sm" variant="outline" onClick={() => openEdit(p)}>Edit</Button>
-                  <Button size="sm" variant="outline" onClick={() => remove(p.id)}>Delete</Button>
-                </>
-              )}
-            </div>
-          </HoverCard>
+            <ProjectCard
+              project={{ ...p, description: p.description || "", url: p.url || "" }}
+              footer={
+                <div className="flex items-center gap-2">
+                  {p.url && (
+                    <a href={p.url} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">Visit</a>
+                  )}
+                  {isOwner && (
+                    <>
+                      <Button size="sm" variant="outline" onClick={() => openEdit(p)}>Edit</Button>
+                      <Button size="sm" variant="outline" onClick={() => remove(p.id)}>Delete</Button>
+                    </>
+                  )}
+                </div>
+              }
+            />
           </Reveal>
         ))}
       </div>

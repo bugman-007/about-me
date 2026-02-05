@@ -23,6 +23,11 @@ export const REQUIRED_SETTING_KEYS = {
   github_url: true,
   linkedin_url: true,
   x_url: true,
+  phone_number: true,
+  telegram_url: true,
+  telegram_username: true,
+  whatsapp_number: true,
+  whatsapp_url: true,
 
   // Navbar
   navbar_avatar_url: true,
@@ -79,6 +84,11 @@ export const DEFAULT_SETTINGS: Record<SettingKey, string> = {
   github_url: "",
   linkedin_url: "",
   x_url: "",
+  phone_number: "",
+  telegram_url: "",
+  telegram_username: "",
+  whatsapp_number: "",
+  whatsapp_url: "",
 
   // Navbar
   navbar_avatar_url: "",

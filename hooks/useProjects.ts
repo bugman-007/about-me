@@ -33,7 +33,13 @@ export function useProjects(featured?: boolean) {
         let query = supabase
           .from("projects")
           .select("*")
-          .order(featured ? "sort_order" : "created_at", { ascending: featured ? true : false });
+          .order(featured ? "sort_order" : "featured", { ascending: featured ? true : false });
+
+        if (!featured) {
+          query = query.order("sort_order", { ascending: true }).order("created_at", { ascending: false });
+        } else {
+          query = query.order("created_at", { ascending: false });
+        }
 
         if (featured !== undefined) {
           query = query.eq("featured", featured);
