@@ -4,6 +4,7 @@ import { Container } from "@/components/layout";
 import { FadeIn } from "@/components/animations";
 import { Reveal } from "@/components/animations/Reveal";
 import { HoverCard } from "@/components/animations/HoverCard";
+import { AnimatedHeading } from "@/components/visual/AnimatedHeading";
 import { useProjects } from "@/hooks/useProjects";
 import { useOwner } from "@/context/OwnerContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -23,6 +24,8 @@ export function FeaturedProjects({ className }: FeaturedProjectsProps) {
   const { isOwner } = useOwner();
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [edit, setEdit] = useState<Project | null>(null);
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -66,15 +69,61 @@ export function FeaturedProjects({ className }: FeaturedProjectsProps) {
       setSaving(false);
     }
   };
+
+  const openEdit = (p: Project) => {
+    setEdit(p);
+    setEditOpen(true);
+  };
+
+  const saveEdit = async () => {
+    if (!edit) return;
+    const res = await fetch("/api/projects/update", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: edit.id,
+        title: edit.title,
+        description: edit.description,
+        url: edit.url,
+        image_url: edit.image_url,
+        tech_stack: edit.tech_stack,
+        featured: edit.featured,
+        slug: edit.slug,
+      }),
+    });
+    if (res.ok) setEditOpen(false);
+  };
+
+  const remove = async (id: string) => {
+    if (!confirm("Delete project?")) return;
+    const res = await fetch("/api/projects/delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+  };
+
+  const move = async (index: number, dir: -1 | 1) => {
+    const target = index + dir;
+    if (target < 0 || target >= projects.length) return;
+    const a = projects[index];
+    const b = projects[target];
+    const aOrder = (a.sort_order ?? index) as number;
+    const bOrder = (b.sort_order ?? target) as number;
+    await Promise.all([
+      fetch("/api/projects/update", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: a.id, sort_order: bOrder }) }),
+      fetch("/api/projects/update", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: b.id, sort_order: aOrder }) }),
+    ]);
+  };
   return (
     <section id="projects" className={className}>
       <Container>
         <div className="py-20">
           <FadeIn>
             <div className="flex items-center justify-between">
-              <h2 className="text-3xl font-bold tracking-tight">
+              <AnimatedHeading as="h2" className="text-4xl font-bold tracking-tight">
                 Featured Projects
-              </h2>
+              </AnimatedHeading>
               {isOwner && (
                 <Dialog open={open} onOpenChange={setOpen}>
                   <DialogTrigger asChild>
@@ -116,7 +165,7 @@ export function FeaturedProjects({ className }: FeaturedProjectsProps) {
               <Reveal key={project.title} delay={i * 0.08}>
                 <HoverCard className="overflow-hidden">
                   {project.image_url && (
-                    <div className="aspect-video w-full overflow-hidden bg-muted">
+                    <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted ring-1 ring-border/40 before:pointer-events-none before:absolute before:inset-0 before:rounded-lg before:opacity-0 before:transition-opacity hover:before:opacity-100 before:[background:radial-gradient(220px_circle_at_var(--x,50%)_var(--y,50%),hsl(var(--primary)/.18),transparent_42%)]">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={project.image_url} alt={project.title} className="h-full w-full object-cover" />
                     </div>
@@ -141,11 +190,56 @@ export function FeaturedProjects({ className }: FeaturedProjectsProps) {
                         <a href={project.url} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">Visit Project</a>
                       )}
                     </div>
+                    {isOwner && (
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        <Button size="sm" variant="outline" onClick={() => openEdit(project)}>Edit</Button>
+                        <Button size="sm" variant="outline" onClick={() => remove(project.id)}>Delete</Button>
+                        <Button size="sm" variant="outline" onClick={() => move(i, -1)}>Move Up</Button>
+                        <Button size="sm" variant="outline" onClick={() => move(i, 1)}>Move Down</Button>
+                      </div>
+                    )}
                   </div>
                 </HoverCard>
               </Reveal>
             ))}
           </div>
+
+          {isOwner && edit && (
+            <Dialog open={editOpen} onOpenChange={setEditOpen}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Edit Project</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-3">
+                  <Input placeholder="Title" value={edit.title} onChange={(e) => setEdit({ ...edit, title: e.target.value })} />
+                  <Textarea placeholder="Description" rows={4} value={edit.description} onChange={(e) => setEdit({ ...edit, description: e.target.value })} />
+                  <Input placeholder="Project URL" value={edit.url} onChange={(e) => setEdit({ ...edit, url: e.target.value })} />
+                  <div className="flex items-center gap-2">
+                    <Input placeholder="Image URL" value={edit.image_url || ""} onChange={(e) => setEdit({ ...edit, image_url: e.target.value })} />
+                    <label className="inline-flex cursor-pointer items-center rounded-md border px-3 py-2 text-sm hover:bg-accent">
+                      <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                        const f = e.target.files?.[0];
+                        if (!f) return;
+                        const fd = new FormData();
+                        fd.append("file", f);
+                        fd.append("folder", "projects");
+                        const res = await fetch("/api/storage/upload", { method: "POST", body: fd });
+                        const data = await res.json();
+                        if (res.ok) setEdit({ ...edit, image_url: data.url as string });
+                      }} />
+                      Upload
+                    </label>
+                  </div>
+                  <Input placeholder="Tech stack (comma-separated)" value={(edit.tech_stack || []).join(", ")} onChange={(e) => setEdit({ ...edit, tech_stack: e.target.value.split(",").map((t) => t.trim()).filter(Boolean) })} />
+                  <Input placeholder="Slug (optional)" value={edit.slug || ""} onChange={(e) => setEdit({ ...edit, slug: e.target.value })} />
+                  <div className="flex justify-end gap-2">
+                    <Button variant="outline" onClick={() => setEditOpen(false)}>Cancel</Button>
+                    <Button onClick={saveEdit}>Save</Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+          )}
         </div>
       </Container>
     </section>

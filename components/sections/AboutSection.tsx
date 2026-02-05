@@ -2,6 +2,7 @@
 
 import { Container } from "@/components/layout";
 import { Reveal } from "@/components/animations/Reveal";
+import { AnimatedHeading } from "@/components/visual/AnimatedHeading";
 import { EditableText } from "@/components/owner/EditableText";
 
 interface AboutSectionProps {
@@ -17,21 +18,26 @@ export function AboutSection({ className, settings = {} }: AboutSectionProps) {
     <section id="about" className={className}>
       <Container>
         <div className="py-20">
-          <Reveal>
-            <EditableText
-              settingKey="about_title"
-              value={title}
-              as="h2"
-              className="text-4xl font-bold tracking-tight"
-            />
-            <EditableText
-              settingKey="about_body"
-              value={body}
-              multiline
-              as="p"
-              className="mt-4 max-w-3xl text-muted-foreground"
-            />
-          </Reveal>
+          <div className="grid items-start gap-8 md:grid-cols-12">
+            <div className="md:col-span-4">
+              <Reveal>
+                <AnimatedHeading as="h2" className="text-4xl font-bold tracking-tight text-balance">
+                  <EditableText settingKey="about_title" value={title} as="span" />
+                </AnimatedHeading>
+              </Reveal>
+            </div>
+            <div className="md:col-span-8">
+              <Reveal>
+                <EditableText
+                  settingKey="about_body"
+                  value={body}
+                  multiline
+                  as="p"
+                  className="max-w-2xl whitespace-pre-line leading-relaxed text-muted-foreground"
+                />
+              </Reveal>
+            </div>
+          </div>
         </div>
       </Container>
     </section>

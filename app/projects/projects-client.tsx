@@ -205,7 +205,9 @@ export default function ProjectsClient({ initialProjects }: { initialProjects: P
           <Reveal key={p.id} delay={i * 0.06}>
           <HoverCard className="p-6">
             {p.image_url && (
-              <img src={p.image_url} alt={p.title} className="mb-3 h-80 w-full rounded-md object-cover" />
+              <div className="relative mb-3 overflow-hidden rounded-lg ring-1 ring-border/40 before:pointer-events-none before:absolute before:inset-0 before:rounded-lg before:opacity-0 before:transition-opacity hover:before:opacity-100 before:[background:radial-gradient(220px_circle_at_var(--x,50%)_var(--y,50%),hsl(var(--primary)/.18),transparent_42%)]">
+                <img src={p.image_url} alt={p.title} className="h-80 w-full object-cover" />
+              </div>
             )}
             <h3 className="font-semibold">{p.title}</h3>
             <p className="mt-2 text-sm text-muted-foreground">{p.description}</p>

@@ -2,11 +2,14 @@
 
 import { Container } from "@/components/layout";
 import { FadeIn } from "@/components/animations";
-import { Reveal, RevealStagger } from "@/components/animations/Reveal";
+import { Reveal } from "@/components/animations/Reveal";
 import { HoverCard } from "@/components/animations/HoverCard";
+import { AnimatedHeading } from "@/components/visual/AnimatedHeading";
 import { EditableText } from "@/components/owner/EditableText";
 import { EditableJson } from "@/components/owner/EditableJson";
 import { useOwner } from "@/context/OwnerContext";
+import { useEffect, useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface Capability {
   title: string;
@@ -41,24 +44,49 @@ export function SystemCapabilities({ className, settings = {} }: SystemCapabilit
   const { isOwner } = useOwner();
   const title = settings.capabilities_title ?? "System Capabilities";
   const subtitle = settings.capabilities_subtitle ?? "Technical expertise and capabilities";
-  let list: Capability[] = capabilities;
-  if (settings.capabilities_json) {
-    try {
-      const parsed = JSON.parse(settings.capabilities_json);
-      if (Array.isArray(parsed)) list = parsed as Capability[];
-    } catch {}
-  }
+  const initialList: Capability[] = useMemo(() => {
+    let arr: Capability[] = capabilities;
+    if (settings.capabilities_json) {
+      try {
+        const parsed = JSON.parse(settings.capabilities_json);
+        if (Array.isArray(parsed)) arr = parsed as Capability[];
+      } catch {}
+    }
+    return arr;
+  }, [settings.capabilities_json]);
+
+  const [list, setList] = useState<Capability[]>(initialList);
+
+  useEffect(() => {
+    setList(initialList);
+  }, [initialList]);
+
+  const move = async (idx: number, dir: -1 | 1) => {
+    const target = idx + dir;
+    if (target < 0 || target >= list.length) return;
+    const updated = [...list];
+    const tmp = updated[idx];
+    updated[idx] = updated[target];
+    updated[target] = tmp;
+    setList(updated);
+    await fetch("/api/settings/update", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ updates: { capabilities_json: JSON.stringify(updated) } }),
+    });
+  };
   return (
     <section id="capabilities" className={className}>
       <Container>
         <div className="py-20">
           <Reveal>
-            <EditableText
-              settingKey="capabilities_title"
-              value={title}
-              as="h2"
-              className="text-4xl font-bold tracking-tight"
-            />
+            <AnimatedHeading as="h2" className="text-4xl font-bold tracking-tight">
+              <EditableText
+                settingKey="capabilities_title"
+                value={title}
+                as="span"
+              />
+            </AnimatedHeading>
             <EditableText
               settingKey="capabilities_subtitle"
               value={subtitle}
@@ -72,9 +100,15 @@ export function SystemCapabilities({ className, settings = {} }: SystemCapabilit
               <Reveal key={capability.title} delay={i * 0.06}>
                 <HoverCard className="p-6">
                   <h3 className="font-semibold">{capability.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">
+                  <p className="mt-2 whitespace-pre-line text-sm text-muted-foreground">
                     {capability.description}
                   </p>
+                  {isOwner && (
+                    <div className="mt-3 flex gap-2">
+                      <Button size="sm" variant="outline" onClick={() => move(i, -1)}>Up</Button>
+                      <Button size="sm" variant="outline" onClick={() => move(i, 1)}>Down</Button>
+                    </div>
+                  )}
                 </HoverCard>
               </Reveal>
             ))}

@@ -3,6 +3,7 @@
 import { Container } from "@/components/layout";
 import { Reveal } from "@/components/animations/Reveal";
 import { HoverCard } from "@/components/animations/HoverCard";
+import { AnimatedHeading } from "@/components/visual/AnimatedHeading";
 import { EditableText } from "@/components/owner/EditableText";
 import { Mail, Github, Linkedin } from "lucide-react";
 
@@ -27,17 +28,18 @@ export function ContactSection({ className, initialSettings = {} }: ContactSecti
             <div className="mx-auto max-w-2xl">
               {/* Header with optional edit button */}
               <div className="mb-8">
-                <EditableText
-                  settingKey="contact_title"
-                  value={initialSettings.contact_title ?? "Get in Touch"}
-                  as="h2"
-                  className="text-4xl font-bold tracking-tight"
-                />
+                <AnimatedHeading as="h2" className="text-4xl font-bold tracking-tight">
+                  <EditableText
+                    settingKey="contact_title"
+                    value={initialSettings.contact_title ?? "Get in Touch"}
+                    as="span"
+                  />
+                </AnimatedHeading>
                 <EditableText
                   settingKey="contact_subtitle"
                   value={initialSettings.contact_subtitle ?? "Interested in working together? Let's connect."}
                   as="p"
-                  className="mt-2 text-muted-foreground"
+                  className="mt-2 whitespace-pre-line text-muted-foreground"
                 />
               </div>
 

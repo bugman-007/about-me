@@ -8,6 +8,7 @@ export interface Project {
   url: string | null;
   image_url: string | null;
   slug: string | null;
+  sort_order?: number | null;
   featured: boolean;
   created_at: string;
   updated_at: string;
@@ -27,6 +28,7 @@ export async function getProjects(
   let query = supabase
     .from("projects")
     .select("*")
+    .order(featured ? "sort_order" : "created_at", { ascending: featured ? true : false })
     .order("created_at", { ascending: false });
 
   if (featured !== undefined) {

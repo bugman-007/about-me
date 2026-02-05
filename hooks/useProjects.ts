@@ -11,6 +11,7 @@ export interface Project {
   url: string;
   image_url?: string;
   slug?: string;
+  sort_order?: number | null;
   featured: boolean;
   created_at: string;
   updated_at: string;
@@ -32,7 +33,7 @@ export function useProjects(featured?: boolean) {
         let query = supabase
           .from("projects")
           .select("*")
-          .order("created_at", { ascending: false });
+          .order(featured ? "sort_order" : "created_at", { ascending: featured ? true : false });
 
         if (featured !== undefined) {
           query = query.eq("featured", featured);

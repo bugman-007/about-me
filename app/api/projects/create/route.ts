@@ -27,9 +27,21 @@ export async function POST(request: NextRequest) {
     const slugValue = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
     const supabase = createAdminClient();
+
+    let sort_order: number | null = null;
+    if (featured) {
+      const { data: maxData } = await supabase
+        .from("projects")
+        .select("sort_order")
+        .order("sort_order", { ascending: false })
+        .limit(1)
+        .single();
+      sort_order = (maxData?.sort_order ?? 0) + 1;
+    }
+
     const { data, error } = await supabase
       .from("projects")
-      .insert({ title, description, url, tech_stack, featured, slug: slugValue, image_url })
+      .insert({ title, description, url, tech_stack, featured, slug: slugValue, image_url, sort_order })
       .select()
       .single();
 

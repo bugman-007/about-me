@@ -54,13 +54,16 @@ export function Navbar({ className, settings = {} }: NavbarProps) {
         className
       )}
     >
-      {/* scroll progress */}
-      <motion.div className="absolute inset-x-0 top-0 h-0.5 bg-primary/30" style={{ scaleX: scrollYProgress, transformOrigin: "0% 50%" }} />
+      {/* scroll progress bar only */}
+      <motion.div
+        className="absolute inset-x-0 top-0 h-1 rounded-b-full bg-primary/40"
+        style={{ scaleX: scrollYProgress, transformOrigin: "0% 50%" }}
+      />
       <Container>
         <nav className="flex h-20 items-center justify-between">
           {/* Logo / Brand */}
           <div className="flex items-center gap-4">
-            <div className="relative h-16 w-16 overflow-hidden rounded-full border border-border bg-muted">
+            <div className="relative h-16 w-16 overflow-hidden rounded-full border border-border bg-muted ring-1 ring-border/50 before:pointer-events-none before:absolute before:inset-0 before:rounded-full before:opacity-0 before:transition-opacity hover:before:opacity-100 before:[background:radial-gradient(120px_circle_at_var(--x,50%)_var(--y,50%),hsl(var(--primary)/.25),transparent_40%)]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               {avatarUrl ? (
                 <img src={avatarUrl} alt="Avatar" className="h-full w-full object-cover" />

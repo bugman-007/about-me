@@ -3,6 +3,7 @@
 import { Container } from "@/components/layout";
 import { Reveal } from "@/components/animations/Reveal";
 import { HoverCard } from "@/components/animations/HoverCard";
+import { AnimatedHeading } from "@/components/visual/AnimatedHeading";
 import { EditableText } from "@/components/owner/EditableText";
 import { EditableJson } from "@/components/owner/EditableJson";
 import { useOwner } from "@/context/OwnerContext";
@@ -89,12 +90,28 @@ export function ExperienceSection({ className, settings = {} }: ExperienceSectio
       body: JSON.stringify({ updates: { experience_json: JSON.stringify(updated) } }),
     });
   };
+  const move = async (idx: number, dir: -1 | 1) => {
+    const target = idx + dir;
+    if (target < 0 || target >= items.length) return;
+    const updated = [...items];
+    const tmp = updated[idx];
+    updated[idx] = updated[target];
+    updated[target] = tmp;
+    setItems(updated);
+    await fetch("/api/settings/update", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ updates: { experience_json: JSON.stringify(updated) } }),
+    });
+  };
   return (
     <section className={className}>
       <Container>
         <div className="py-20">
           <Reveal>
-            <EditableText settingKey="experience_title" value={settings.experience_title ?? "Experience"} as="h2" className="text-3xl font-bold tracking-tight" />
+            <AnimatedHeading as="h2" className="text-4xl font-bold tracking-tight">
+              <EditableText settingKey="experience_title" value={settings.experience_title ?? "Experience"} as="span" />
+            </AnimatedHeading>
             <EditableText settingKey="experience_subtitle" value={settings.experience_subtitle ?? "Professional journey and career highlights"} as="p" className="mt-4 text-muted-foreground" />
           </Reveal>
 
@@ -113,13 +130,15 @@ export function ExperienceSection({ className, settings = {} }: ExperienceSectio
                       {experience.period}
                     </span>
                   </div>
-                  <p className="mt-4 text-sm text-muted-foreground">
+                   <p className="mt-4 whitespace-pre-line text-sm text-muted-foreground">
                     {experience.description}
                   </p>
                   {isOwner && (
                     <div className="mt-4 flex gap-2">
                       <Button size="sm" variant="outline" onClick={() => openEdit(index)}>Edit</Button>
                       <Button size="sm" variant="outline" onClick={() => remove(index)}>Delete</Button>
+                      <Button size="sm" variant="outline" onClick={() => move(index, -1)}>Up</Button>
+                      <Button size="sm" variant="outline" onClick={() => move(index, 1)}>Down</Button>
                     </div>
                   )}
                 </HoverCard>

@@ -5,6 +5,7 @@ import { Container } from "@/components/layout";
 import { FadeIn, SlideUp, StaggerChildren, StaggerItem } from "@/components/animations";
 import { Reveal, RevealStagger } from "@/components/animations/Reveal";
 import { motion } from "framer-motion";
+import { AnimatedHeading } from "@/components/visual/AnimatedHeading";
 import { Button } from "@/components/ui/button";
 import { EditableText } from "@/components/owner/EditableText";
 import { useOwner } from "@/context/OwnerContext";
@@ -29,8 +30,13 @@ function HeroContainer({ children }: { children: React.ReactNode }) {
 // Strong positioning heading
 function Badge() {
   return (
-    <div className="mx-auto mb-4 inline-flex items-center rounded-full border border-border bg-background/50 px-3 py-1 text-xs text-muted-foreground backdrop-blur">
-      AI Systems Engineer
+    <div>
+      <div className="mx-auto mb-4 mr-4 inline-flex items-center rounded-full border border-border bg-background/50 px-3 py-1 text-xs text-muted-foreground backdrop-blur">
+        AI/ML Systems Engineer
+      </div>
+      <div className="mx-auto mb-4 ml-4 inline-flex items-center rounded-full border border-border bg-background/50 px-3 py-1 text-xs text-muted-foreground backdrop-blur">
+        Backend Engineer
+      </div>
     </div>
   );
 }
@@ -40,12 +46,14 @@ function HeroHeading({ value }: { value: string }) {
     <Reveal>
       <div>
         <Badge />
-        <EditableText
-          settingKey="hero_headline"
-          value={value}
-          as="h1"
-          className="text-balance text-5xl font-bold tracking-tight sm:text-6xl"
-        />
+        <AnimatedHeading as="h1" className="text-balance text-5xl font-bold tracking-tight sm:text-6xl">
+          <EditableText
+            settingKey="hero_headline"
+            value={value}
+            as="span"
+            className="whitespace-pre-line"
+          />
+        </AnimatedHeading>
       </div>
     </Reveal>
   );
@@ -60,7 +68,7 @@ function HeroSubheading({ value }: { value: string }) {
         value={value}
         multiline
         as="p"
-        className="mt-6 text-pretty text-lg text-muted-foreground"
+        className="mt-6 text-pretty text-lg text-muted-foreground whitespace-pre-line"
       />
     </Reveal>
   );

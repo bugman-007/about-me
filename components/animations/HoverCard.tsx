@@ -34,7 +34,7 @@ export function HoverCard({ children, className, tilt = true }: HoverCardProps) 
       onMouseMove={onMove}
       onMouseLeave={onLeave}
       className={cn(
-        "relative rounded-lg border border-border bg-card/70 shadow-sm transition-all duration-200 will-change-transform hover:-translate-y-0.5 hover:shadow-lg",
+        "relative cursor-pointer rounded-lg border border-border bg-card/70 shadow-sm transition-all duration-200 will-change-transform hover:-translate-y-0.5 hover:shadow-lg",
         // glow border using gradient overlay
         "before:pointer-events-none before:absolute before:inset-0 before:rounded-lg before:opacity-0 before:transition-opacity before:duration-200 hover:before:opacity-100",
         "before:[background:radial-gradient(400px_circle_at_var(--x,50%)_var(--y,50%),hsl(var(--primary)/.15),transparent_40%)]",

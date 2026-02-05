@@ -75,7 +75,7 @@ export default async function RootLayout({
               <AnimatedBackground />
               <Navbar settings={settings} />
               <main className="flex-1">{children}</main>
-              <Footer />
+              <Footer settings={settings} />
             </div>
           </OwnerProvider>
         </ThemeProvider>

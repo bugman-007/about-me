@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS public.projects (
   url TEXT,
   image_url TEXT,
   slug TEXT UNIQUE,
+  sort_order INT,
   featured BOOLEAN DEFAULT false,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -75,6 +76,10 @@ INSERT INTO public.projects (title, description, tech_stack, url, featured) VALU
 -- Add columns if table already existed
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS image_url TEXT;
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS slug TEXT UNIQUE;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS sort_order INT;
+-- Initialize sort_order for existing featured projects if null
+UPDATE public.projects SET sort_order = EXTRACT(EPOCH FROM created_at)::int
+WHERE sort_order IS NULL;
 
 -- Sample site settings
 INSERT INTO public.site_settings (key, value) VALUES
@@ -87,6 +92,7 @@ INSERT INTO public.site_settings (key, value) VALUES
 -- INDEXES FOR PERFORMANCE
 -- ========================================
 CREATE INDEX IF NOT EXISTS idx_projects_featured ON public.projects(featured);
+CREATE INDEX IF NOT EXISTS idx_projects_sort ON public.projects(sort_order);
 CREATE INDEX IF NOT EXISTS idx_site_settings_key ON public.site_settings(key);
 
 -- ========================================
